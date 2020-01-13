@@ -25,7 +25,7 @@ topk = cfg["defaults"]["topk"]
 penalty = cfg["defaults"]["penalty"]
 topn = cfg["defaults"]["topn"]
 #prompt = ""
-#split_prompt = ""
+split_prompt = ""
 text = ""
 is_running = False
 
@@ -110,6 +110,7 @@ class Ctl():
 			self.setPrompt()
 
 	def setPrompt(self):
+		global split_prompt
 		self.running = True
 		txt = self.raw_prompt.replace("@","")
 		prompt = control_code+" "+txt
@@ -126,16 +127,16 @@ class Ctl():
 		print(split_prompt)
 		self.pcb(" ".join(split_prompt[1:]))
 		
-		self.split_prompt = split_prompt
+		#self.split_prompt = split_prompt
 		self.gentext()
 		self.running = False
 		
 	def gentext(self):
 		global text
-		prompt = self.prompt
+		#prompt = self.prompt
 		#time.sleep(15)
 		#print("Done")
-		split_prompt = self.split_prompt
+		#split_prompt = self.split_prompt
 		text = [word2idx[i] for i in split_prompt]
 		padded_text = text + [0] * (generate_num - len(text))
 		tokens_generated = np.tile(padded_text, (1,1))
