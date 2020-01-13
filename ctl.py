@@ -29,7 +29,7 @@ topn = cfg["defaults"]["topn"]
 text = ""
 is_running = False
 
-
+"""
 tf.compat.v1.random.set_random_seed(aseed)
 os.environ['PYTHONHASHSEED'] = str(aseed)
 np.random.seed(aseed)
@@ -86,6 +86,7 @@ def serving_input_fn():
 	inputs = {'input_1': tf.compat.v1.placeholder(tf.int32, [1,seq_length])}
 	return tf.estimator.export.ServingInputReceiver(inputs, inputs)
 predict_fn = tf.contrib.predictor.from_estimator(estimator_model, serving_input_fn)
+"""
 bpe = fastBPE.fastBPE('codes', 'vocab')
 
 class Ctl():
@@ -95,7 +96,7 @@ class Ctl():
 		self.cb = cb
 
 	def start(self,txt):
-		global prompt
+		#global prompt
 		global split_prompt
 		prompt = control_code+" "+txt
 		prompt = prompt.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
@@ -104,8 +105,10 @@ class Ctl():
 		if not any(split_prompt[0] == x for x in CONTROL_CODES.keys()):
 			print("WARNING! You are not starting your generation from a control code so you won't get good results")
 		self.prompt = prompt
+		print(prompt)
+		print(split_prompt)
 		self.split_prompt = split_prompt
-		self.gentext()
+		"""self.gentext()
 	
 	def gentext(self):
 		global text
@@ -196,7 +199,7 @@ class Ctl():
 		print("Awaiting new prompt...") 
 		return
 
-
+"""
 """
 def rungen(txt):
 	global is_running

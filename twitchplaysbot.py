@@ -2,18 +2,19 @@ import os, sys, random, json
 from ctl import Ctl
 #with open("config.json", "r") as f: cfg = json.load(f)
 
-botData = {
-	"prompt":"",
-	"data": "",
-	"scores": {}
-}
+
 
 class TwitchBotController():
 	def __init__(self):
 		self.ctl = Ctl(self.update)
+		self.botData = {
+			"prompt":"",
+			"data": "",
+			"scores": {}
+		}
 
 	def update(self, txt):
-		botData["data"] = txt
+		self.botData["data"] = txt
 
 	def prompt(self,txt):
 		print(txt)
@@ -24,12 +25,10 @@ class TwitchBotController():
 		print("restarting...")
 	
 	def setv(self,k,v):
-		global botData
-		botData[k] = v
+		self.botData[k] = v
 	
 	def get(self, k):
-		global botData
-		return botData[k]
+		return self.botData[k]
 
 
 
