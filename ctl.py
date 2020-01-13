@@ -29,7 +29,7 @@ topn = cfg["defaults"]["topn"]
 text = ""
 is_running = False
 
-"""
+
 tf.compat.v1.random.set_random_seed(aseed)
 os.environ['PYTHONHASHSEED'] = str(aseed)
 np.random.seed(aseed)
@@ -86,34 +86,8 @@ def serving_input_fn():
 	inputs = {'input_1': tf.compat.v1.placeholder(tf.int32, [1,seq_length])}
 	return tf.estimator.export.ServingInputReceiver(inputs, inputs)
 predict_fn = tf.contrib.predictor.from_estimator(estimator_model, serving_input_fn)
-"""
+
 bpe = fastBPE.fastBPE('codes', 'vocab')
-
-
-"""
-def rungen(txt):
-	global is_running
-	global thr
-	is_running = True
-	
-	
-	setPrompt(txt)
-	thr = threading.Thread(target=gentext, args=(), kwargs={})
-	thr.start()
-	
-
-def stopgen():
-	global is_running
-	global thr
-	is_running = False
-	thr.join()
-	return
-	
-def setSeed(s):
-	global seed
-	seed = s
-
-"""
 
 class Ctl():
 	def __init__(self, cb, stcb, pcb):
@@ -154,8 +128,6 @@ class Ctl():
 		print(split_prompt)
 		self.pcb(" ".join(split_prompt[1:]))
 		
-		#print(prompt)
-		
 		self.split_prompt = split_prompt
 		self.gentext()
 		self.running = False
@@ -165,7 +137,7 @@ class Ctl():
 		prompt = self.prompt
 		time.sleep(15)
 		print("Done")
-		"""split_prompt = self.split_prompt
+		split_prompt = self.split_prompt
 		text = [word2idx[i] for i in prompt]
 		padded_text = text + [0] * (generate_num - len(text))
 		tokens_generated = np.tile(padded_text, (1,1))
@@ -245,4 +217,4 @@ class Ctl():
 			self.running = False
 			return
 		self.running = False
-		return"""
+		return
