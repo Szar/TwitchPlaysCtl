@@ -26,7 +26,7 @@ async def example(message, word1:str, number1:int, rest:str):
 
 
 @bot.command('new-prompt', alias=[], desc='Restart prompt')
-async def newprompt(message, subcommand:str):
+async def newprompt(message):
 	twitchplaysbot.newprompt()
 	#bot.say('restarting...')
 
