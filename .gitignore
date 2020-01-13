@@ -135,6 +135,8 @@ training_*/
 
 .DS_Store
 *.DS_Store
+/config.json
 config.json
 *config.json
+config.*
 training/*.txt

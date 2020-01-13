@@ -36,7 +36,30 @@ python training.py --model_dir ../YOUR_CKPT_DIR.ckpt/ --iterations 100
 ```
 
 ### Configure
-Edit config.json with your Twitch API details. In order to generate a token, you can use the following URL:
+Create config.json add:
+```
+{
+	"defaults": {
+		"port": 3100,
+		"seed": 34391,
+		"temperature": 0.9,
+		"generate_num": 256,
+		"penalty": 1.2,
+		"nucleusprob":0,
+		"topk":0,
+		"topn":0
+	},
+	"twitch":{
+		"client_id":"",
+		"redirect_uri":"",
+		"bot_username":"",
+		"bot_token":"",
+		"channel": ""
+	}
+}
+```
+
+Fill out the twitch config with your Twitch app and stream details. In order to generate a token, you can use the following URL:
 ```
 https://id.twitch.tv/oauth2/authorize?client_id=CLIENT_ID_HERE&redirect_uri=REDIRECT_URI_HERE&response_type=token&scope=chat:edit%20chat:read%20user:read:email%20user:read:broadcast%20channel:read:subscriptions%20bits:read%20analytics:read:games
 ```
