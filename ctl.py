@@ -39,7 +39,6 @@ vocab = list(map(lambda x: x.split(' ')[0], vocab)) + ['<unk>'] + ['\n']
 
 vocab_size = len(vocab)
 word2idx = {u:i for i, u in enumerate(vocab)}
-print(word2idx)
 idx2word = np.array(vocab)
 seq_length = min(generate_num, 256)
 embedding_dim = 1280
