@@ -1,36 +1,24 @@
-import os, sys, threading, random, time, json, requests
-import asynctwitch
-#irc.bot
-#from pyaib.ircbot import IrcBot
-from multiprocessing import Pool
+import os, sys, random, json
 from ctl import Ctl
-with open("config.json", "r") as f: cfg = json.load(f)
+#with open("config.json", "r") as f: cfg = json.load(f)
 
-bot = asynctwitch.CommandBot(
-			user = cfg["twitch"]["bot_username"],
-			oauth = 'oauth:'+cfg["twitch"]["bot_token"],  # oauth:1234567890abcdefghijklmnopqrst
-			channel = cfg["twitch"]["channel"],     
-			prefix = "!",  
-		)
 botData = {
 	"prompt":"",
 	"data": "",
 	"scores": {}
 }
 
-class Controller():
+class TwitchBotController():
 	def __init__(self):
-		self.client_id =  cfg["twitch"]["client_id"]
-		self.token = cfg["twitch"]["bot_token"]
-		self.channel = '#' + cfg["twitch"]["channel"]
 		self.ctl = Ctl(self.update)
 
 	def update(self, txt):
 		botData["data"] = txt
 
 	def prompt(self,txt):
+		print(txt)
 		self.setv("prompt",txt)
-		self.ctl.prompt(txt)
+		self.ctl.start(txt)
 	
 	def newprompt(self):
 		print("restarting...")
@@ -68,7 +56,7 @@ class Controller():
 			#setSeed(int(e.arguments[0].replace("!seed ","").strip()))"""
 
 
-controller = Controller()
+"""
 
 class TwitchBot(): #irc.bot.SingleServerIRCBot
 	def __init__(self):
@@ -81,18 +69,4 @@ class TwitchBot(): #irc.bot.SingleServerIRCBot
 		#return ()
 
 
-@bot.command('example', alias=['moreexample','anothaone'], desc='example command')
-async def example(message, word1:str, number1:int, rest:str):
-	bot.say(message.channel.name, 'wow')
-
-
-@bot.command('new-prompt', alias=[], desc='Restart prompt')
-async def say(message, subcommand:str):
-	controller.newprompt()
-	#print(botData)
-	#bot.say('yes!')
-
-@bot.command('prompt', alias=[], desc='Set new prompt')
-async def say(message, subcommand:str):
-	controller.prompt(subcommand)
-	#print(botData)
+"""

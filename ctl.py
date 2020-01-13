@@ -26,7 +26,7 @@ penalty = cfg["defaults"]["penalty"]
 topn = cfg["defaults"]["topn"]
 #prompt = ""
 #split_prompt = ""
-#text = ""
+text = ""
 is_running = False
 
 
@@ -88,23 +88,13 @@ def serving_input_fn():
 predict_fn = tf.contrib.predictor.from_estimator(estimator_model, serving_input_fn)
 bpe = fastBPE.fastBPE('codes', 'vocab')
 
-
-
-
-
-
-
-
-
-
-
 class Ctl():
 	def __init__(self, cb):
 		self.prompt =  ""
 		self.thr = threading.Thread(target=self.prompt, args=(), kwargs={})
 		self.cb = cb
 
-	def prompt(self,txt):
+	def start(self,txt):
 		global prompt
 		global split_prompt
 		prompt = control_code+" "+txt
@@ -197,13 +187,7 @@ class Ctl():
 						tokens_generated_so_far = re.sub('(@@ ?$)', '', string=tokens_generated_so_far)              
 	
 					self.cb(tokens_generated_so_far[5:])
-					"""print()
-					print()
-					
-					print(tokens_generated_so_far[5:]) 
-					print()
-					print()
-					print("-")"""
+
 
 		except KeyboardInterrupt:
 			return
@@ -236,4 +220,4 @@ def setSeed(s):
 	global seed
 	seed = s
 
-	"""
+"""
