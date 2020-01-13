@@ -98,7 +98,7 @@ class Ctl():
 		global prompt
 		global split_prompt
 		prompt = control_code+" "+txt
-		prompt = prompt.split('\\n')
+		prompt = prompt.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
 		split_prompt = ' \n '.join(bpe.apply(prompt))
 		split_prompt = split_prompt.split(' ')
 		if not any(split_prompt[0] == x for x in CONTROL_CODES.keys()):
