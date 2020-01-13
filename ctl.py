@@ -39,6 +39,7 @@ vocab = list(map(lambda x: x.split(' ')[0], vocab)) + ['<unk>'] + ['\n']
 
 vocab_size = len(vocab)
 word2idx = {u:i for i, u in enumerate(vocab)}
+print(word2idx)
 idx2word = np.array(vocab)
 seq_length = min(generate_num, 256)
 embedding_dim = 1280
@@ -136,7 +137,7 @@ class Ctl():
 		#time.sleep(15)
 		#print("Done")
 		split_prompt = self.split_prompt
-		text = [word2idx[i] for i in prompt]
+		text = [word2idx[i] for i in split_prompt]
 		padded_text = text + [0] * (generate_num - len(text))
 		tokens_generated = np.tile(padded_text, (1,1))
 		
