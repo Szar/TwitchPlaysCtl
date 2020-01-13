@@ -1,6 +1,7 @@
 from flask_api import FlaskAPI, status, exceptions
 from flask_api.decorators import set_renderers
 import os, sys
+with open("config.json", "r") as f: cfg = json.load(f)
 
 print(os.path.dirname(os.path.realpath(__file__)))
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -31,4 +32,4 @@ def url_3(pid):
 
 
 if __name__ == "__main__":
-    app.run(host= '0.0.0.0', port=3100, debug=True)
+    app.run(host= '0.0.0.0', port=cfg["defaults"]["port"], debug=True)

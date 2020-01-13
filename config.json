@@ -1,5 +1,6 @@
 {
 	"defaults": {
+		"port": 3100,
 		"seed": 34391,
 		"temperature": 0.9,
 		"generate_num": 256,
