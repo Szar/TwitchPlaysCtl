@@ -89,15 +89,57 @@ predict_fn = tf.contrib.predictor.from_estimator(estimator_model, serving_input_
 """
 bpe = fastBPE.fastBPE('codes', 'vocab')
 
+
+"""
+def rungen(txt):
+	global is_running
+	global thr
+	is_running = True
+	
+	
+	setPrompt(txt)
+	thr = threading.Thread(target=gentext, args=(), kwargs={})
+	thr.start()
+	
+
+def stopgen():
+	global is_running
+	global thr
+	is_running = False
+	thr.join()
+	return
+	
+def setSeed(s):
+	global seed
+	seed = s
+
+"""
+
 class Ctl():
-	def __init__(self, cb):
+	def __init__(self, cb, stcb, pcb):
 		self.prompt =  ""
-		self.thr = threading.Thread(target=self.prompt, args=(), kwargs={})
+		self.thr = threading.Thread(target=self.setPrompt, args=(), kwargs={})
 		self.cb = cb
+		self.stcb = stcb
+		self.pcb = pcb
+		self.running = False
+		
+	def stop(self):
+		self.running = False
+		return self.thr.join()
 
 	def start(self,txt):
 		#global prompt
 		global split_prompt
+		if self.running:
+			print("Already running prompt.")
+		else:
+			self.raw_prompt = txt
+			self.setPrompt()
+
+	def setPrompt(self):
+		self.running = True
+		txt = self.raw_prompt.replace("@","")
 		prompt = control_code+" "+txt
 		prompt = prompt.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
 		split_prompt = ' \n '.join(bpe.apply(prompt))
@@ -105,29 +147,36 @@ class Ctl():
 		if not any(split_prompt[0] == x for x in CONTROL_CODES.keys()):
 			print("WARNING! You are not starting your generation from a control code so you won't get good results")
 		self.prompt = prompt
-		print(prompt)
+
+		self.thr = threading.Thread(target=self.gentext, args=(), kwargs={})
+		self.thr.start()
+		
 		print(split_prompt)
+		self.pcb(" ".join(split_prompt[1:]))
+		
+		#print(prompt)
+		
 		self.split_prompt = split_prompt
-		"""self.gentext()
-	
+		self.gentext()
+		self.running = False
+		
 	def gentext(self):
 		global text
 		prompt = self.prompt
-		split_prompt = self.split_prompt
-		#global is_running
-		#global thr
+		time.sleep(15)
+		print("Done")
+		"""split_prompt = self.split_prompt
 		text = [word2idx[i] for i in prompt]
 		padded_text = text + [0] * (generate_num - len(text))
 		tokens_generated = np.tile(padded_text, (1,1))
 		
-		brstring = "                               "
 		try:
 			for token in range(len(text)-1, generate_num-1):
-				if is_running is False:
+				if self.running is False:
 					token = generate_num
 					break
 				else:
-					if is_running:
+					if self.running:
 						if token <= seq_length:
 							prompt_logits = predict_fn({'input_1':tokens_generated[:, :seq_length]})['tied_embedding_softmax'].squeeze() / (temperature if temperature>0 else 1.)
 							_token = token if token < seq_length else -1
@@ -193,34 +242,7 @@ class Ctl():
 
 
 		except KeyboardInterrupt:
+			self.running = False
 			return
-		print()
-		print()
-		print("Awaiting new prompt...") 
-		return
-
-"""
-"""
-def rungen(txt):
-	global is_running
-	global thr
-	is_running = True
-	
-	
-	setPrompt(txt)
-	thr = threading.Thread(target=gentext, args=(), kwargs={})
-	thr.start()
-	
-
-def stopgen():
-	global is_running
-	global thr
-	is_running = False
-	thr.join()
-	return
-	
-def setSeed(s):
-	global seed
-	seed = s
-
-"""
+		self.running = False
+		return"""

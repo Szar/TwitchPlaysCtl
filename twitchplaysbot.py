@@ -6,7 +6,7 @@ from ctl import Ctl
 
 class TwitchBotController():
 	def __init__(self):
-		self.ctl = Ctl(self.update)
+		self.ctl = Ctl(self.update, self.stopped, self.title)
 		self.botData = {
 			"prompt":"",
 			"data": "",
@@ -14,15 +14,24 @@ class TwitchBotController():
 		}
 
 	def update(self, txt):
-		self.botData["data"] = txt
+		#self.botData["data"] = txt
+		self.setv("data",txt)
+
+	def title(self, txt):
+		self.setv("prompt",txt)
+		#self.botData["prompt"] = txt
+
+	def stopped(self):
+		self.botData["data"] = ""
+		self.botData["prompt"] = "Waiting for new prompt..."
 
 	def prompt(self,txt):
 		print(txt)
-		self.setv("prompt",txt)
+		#self.setv("prompt",txt)
 		self.ctl.start(txt)
 	
 	def newprompt(self):
-		print("restarting...")
+		self.ctl.stop()
 	
 	def setv(self,k,v):
 		self.botData[k] = v
