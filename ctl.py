@@ -135,8 +135,8 @@ class Ctl():
 	def gentext(self):
 		global text
 		prompt = self.prompt
-		time.sleep(15)
-		print("Done")
+		#time.sleep(15)
+		#print("Done")
 		split_prompt = self.split_prompt
 		text = [word2idx[i] for i in prompt]
 		padded_text = text + [0] * (generate_num - len(text))
