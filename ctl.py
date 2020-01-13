@@ -103,8 +103,6 @@ class Ctl():
 		return self.thr.join()
 
 	def start(self,txt):
-		#global prompt
-		global split_prompt
 		if self.running:
 			print("Already running prompt.")
 		else:
