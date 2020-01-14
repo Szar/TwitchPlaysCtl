@@ -58,12 +58,14 @@ class TwitchController():
 	
 	def score(self, txt):
 		word = txt.strip().split(" ")[-1].lower().strip()
-		print(word)
+		winners = []
 		for u in self.guess:
 			if word==self.guess[u]:
-				self.say(u+" got it right!")
-			else:
-				self.say(u+" got it wrong!")
+				winners.append(u)
+			#	self.say(u+" got it right!")
+			#else:
+			#	self.say(u+" got it wrong!")
+		self.say(", ".join(winners)+" got it right!")
 
 		self.guess = {}
 
@@ -149,7 +151,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 		elif cmd == "guess":
 			self.controller.addGuess(message)
-			c.privmsg(self.channel, "[Guess] "+message["username"]+" thinks \""+message["command_text"]+"\"")
+			c.privmsg(self.channel, "[Guess] "+message["username"]+" thinks the next word will be \""+message["command_text"]+"\"")
 
 
 if __name__ == "__main__":
