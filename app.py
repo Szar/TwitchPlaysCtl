@@ -65,11 +65,12 @@ class TwitchController():
 		print("==================")
 		#return r
 
-	"""def title(self, txt):
-		print("=== title ===")
-		print(self.prompt["prompt"])
-		print(txt)
-		print("==================")"""
+	def title(self, txt):
+		pass
+		#print("=== title ===")
+		#print(self.prompt["prompt"])
+		#print(txt)
+		#print("==================")
 
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
