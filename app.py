@@ -65,7 +65,10 @@ class TwitchController():
 			#	self.say(u+" got it right!")
 			#else:
 			#	self.say(u+" got it wrong!")
-		self.say(", ".join(winners)+" got it right!")
+		if len(winners)>0:
+			self.say(", ".join(winners)+" got it right!")
+		else:
+			self.say("No one was right.")
 
 		self.guess = {}
 
