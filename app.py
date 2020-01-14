@@ -1,4 +1,4 @@
-import os, sys, irc.bot, random, time, json, requests, threading
+import os, sys, irc.bot, random, time, json, requests, threading, re
 from ctl import Ctl
 
 with open("config.json", "r") as f: cfg = json.load(f)
@@ -15,7 +15,7 @@ class TwitchController():
 		self.say = say
 
 	def addGuess(self,message):
-		self.guess[message["username"]] = message["command_text"].lower().strip()
+		self.guess[message["username"]] = re.sub(r'\W+', '', message["command_text"].lower().strip()) 
 		print(self.guess)
 
 	def addPrompt(self,message):
@@ -57,7 +57,7 @@ class TwitchController():
 		self.thr.join()
 	
 	def score(self, txt):
-		word = txt.strip().split(" ")[-1].lower().strip()
+		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip())
 		winners = []
 		if len(self.guess)>0:
 			for u in self.guess:
