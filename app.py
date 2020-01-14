@@ -45,10 +45,11 @@ class TwitchController():
 			#self.ctl.start(self.prompt["prompt"])
 
 	def stopPrompt(self):
-		self.running = False
+		
 		self.ctl.running = False
 		self.ctl.stop()
 		self.thr.join()
+		
 		
 	def update(self, txt):
 		self.prompt["text"] = txt
