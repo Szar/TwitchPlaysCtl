@@ -7,14 +7,15 @@ with open("config.json", "r") as f: cfg = json.load(f)
 #print("https://id.twitch.tv/oauth2/authorize?client_id="+cfg["twitch"]["client_id"]+"&redirect_uri="+cfg["twitch"]["redirect_uri"]+"&response_type=token&scope=chat:edit%20chat:read%20user:read:email%20user:read:broadcast%20channel:read:subscriptions%20bits:read%20analytics:read:games")
 
 class TwitchController():
-	def __init__(self):
+	def __init__(self, say):
 		self.ctl = Ctl(self.update, self.stopped, self.title)
 		self.prompt = {}
 		self.running = False
 		self.guess = {}
+		self.say = say
 
 	def addGuess(self,message):
-		self.guess[message["username"]] = message["command_text"]
+		self.guess[message["username"]] = message["command_text"].lower().strip()
 		print(self.guess)
 
 	def addPrompt(self,message):
@@ -54,7 +55,18 @@ class TwitchController():
 		self.ctl.running = False
 		self.ctl.stop()
 		self.thr.join()
-		
+	
+	def score(self, txt):
+		word = txt.strip().split(" ")[-1].lower().strip()
+		print(word)
+		for u in self.guess:
+			if word==self.guess[u]:
+				self.say(u+" got it right!")
+			else:
+				self.say(u+" got it wrong!")
+
+		self.guess = {}
+
 		
 	def update(self, txt):
 		self.prompt["text"] = txt
@@ -63,7 +75,7 @@ class TwitchController():
 		print(json.dumps(r))
 		print("==================")
 		
-		self.guess = {}
+		self.score(txt)
 
 	def stopped(self):
 		self.running = False
@@ -86,7 +98,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		self.client_id = client_id
 		self.token = token
 		self.channel = '#' + channel
-		self.controller = TwitchController()
+		self.controller = TwitchController(self.say)
 		
 		r = requests.get('https://api.twitch.tv/kraken/users?login=' + channel, headers={'Client-ID': client_id, 'Accept': 'application/vnd.twitchtv.v5+json'}).json()
 		self.channel_id = r['users'][0]['_id']
@@ -119,6 +131,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 				message[t["key"]] = t["value"]
 		return message
 
+	def say(self,m):
+		self.connection.privmsg(self.channel, m)
 
 	def do_command(self, e, cmd):
 		c = self.connection
