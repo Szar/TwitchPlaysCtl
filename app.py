@@ -36,8 +36,9 @@ class TwitchController():
 
 	def startPrompt(self, message):
 		self.prompt = self.addPrompt(message)
-		self.thr = threading.Thread(target=self.ctl.start, args=(self.prompt["prompt"]), kwargs={})
-		self.thr.start()
+		if __name__ == "__main__":
+			self.thr = threading.Thread(target=self.ctl.start, args=(self.prompt["prompt"]), kwargs={})
+			self.thr.start()
 		#self.ctl.start(self.prompt["prompt"])
 
 	def stopPrompt(self):
