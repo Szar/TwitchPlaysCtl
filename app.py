@@ -138,7 +138,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		return message
 
 	def say(self,m):
-		self.connection.privmsg(self.channel, m)
+		self.connection.privmsg(self.channel, "[Ctl] "+m)
 
 	def do_command(self, e, cmd):
 		c = self.connection
@@ -147,15 +147,15 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		
 		if cmd == "prompt":
 			self.controller.startPrompt(message)
-			c.privmsg(self.channel, "[New Prompt] \""+message["command_text"]+"\"")
+			c.privmsg(self.channel, "[Ctl] Using prompt \""+message["command_text"]+"\"")
 		
 		elif cmd == "new-prompt":
 			self.controller.stopPrompt()
-			c.privmsg(self.channel, "[Stopped Prompt]")
+			c.privmsg(self.channel, "[Ctl] Ready for new prompt.")
 
 		elif cmd == "guess":
 			self.controller.addGuess(message)
-			c.privmsg(self.channel, "[Guess] "+message["username"]+" thinks the next word will be \""+message["command_text"]+"\"")
+			c.privmsg(self.channel, "[Ctl] "+message["username"]+" thinks the next word will be \""+message["command_text"]+"\"")
 
 
 if __name__ == "__main__":
