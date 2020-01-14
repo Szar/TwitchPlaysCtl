@@ -99,7 +99,7 @@ class Ctl():
 		global split_prompt
 		print("------ Setting Prompt: "+self.raw_prompt+" -------")
 		self.running = True
-		txt = self.raw_prompt.replace("@","")
+		txt = self.raw_prompt
 		prompt = cfg["defaults"]["control_code"]+" "+txt
 		prompt = prompt.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
 		split_prompt = ' \n '.join(bpe.apply(prompt))
