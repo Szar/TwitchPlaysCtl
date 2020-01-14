@@ -35,12 +35,14 @@ class TwitchController():
 		return r
 
 	def startPrompt(self, message):
-		self.prompt = self.addPrompt(message)
-		if __name__ == "__main__":
-			self.ctl.setPrompt(self.prompt["prompt"])
-			self.thr = threading.Thread(target=self.ctl.start)
-			self.thr.start()
-		#self.ctl.start(self.prompt["prompt"])
+		if self.running is False:
+			self.running = True
+			self.prompt = self.addPrompt(message)
+			if __name__ == "__main__":
+				self.ctl.setPrompt(self.prompt["prompt"])
+				self.thr = threading.Thread(target=self.ctl.start)
+				self.thr.start()
+			#self.ctl.start(self.prompt["prompt"])
 
 	def stopPrompt(self):
 		self.running = False
@@ -56,17 +58,18 @@ class TwitchController():
 		#return r
 
 	def stopped(self):
+		self.running = False
 		r = requests.get(cfg["defaults"]["api_url"]+"?action=deactivate").json()
 		print("=== stopPrompt ===")
 		print(json.dumps(r))
 		print("==================")
 		#return r
 
-	def title(self, txt):
+	"""def title(self, txt):
 		print("=== title ===")
 		print(self.prompt["prompt"])
 		print(txt)
-		print("==================")
+		print("==================")"""
 
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
@@ -90,7 +93,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		c.cap('REQ', ':twitch.tv/commands')
 		c.join(self.channel)
 		print("[ Bot Running ]") 
-		#self.controller.addPrompt(sample_message)
 		self.controller.stopped()
 		
 	def on_pubmsg(self, c, e):
@@ -117,44 +119,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		if cmd == "prompt":
 			self.controller.startPrompt(message)
 			c.privmsg(self.channel, "[New Prompt] \""+message["command_text"]+"\"")
-			#time.sleep(10)
-			#self.controller.update("how far can you do this thing addon text")
 		
 		elif cmd == "new-prompt":
 			self.controller.stopPrompt()
 			c.privmsg(self.channel, "[Stopped Prompt]")
 
 
-		
-		
-		
-
-		 # channel
-		
-		
-		#
-		"""if cmd == "new-prompt":
-			c.privmsg(self.channel, str(is_running))
-			if is_running:
-				c.privmsg(self.channel, "[IncelBot] Restarting... please wait.")
-				stopgen()
-				
-				
-			
-		elif cmd == "prompt":
-			if is_running is False:
-				txt = e.arguments[0].replace("!prompt ","").strip()
-				if txt!="":
-					c.privmsg(self.channel, "[IncelBot] Using prompt \""+txt+"\"")
-					rungen(txt)
-					#rungen(txt)
-		elif cmd == "seed":
-			setSeed(int(e.arguments[0].replace("!seed ","").strip()))"""
-
 if __name__ == "__main__":
 	bot = TwitchBot(cfg["twitch"]["bot_username"], cfg["twitch"]["client_id"], cfg["twitch"]["bot_token"], cfg["twitch"]["channel"])
 	bot.start()
-
-#twitchplaysbot = TwitchController()
-#twitchplaysbot.newprompt()
-#twitchplaysbot.prompt(subcommand)
