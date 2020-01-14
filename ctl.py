@@ -5,7 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 import numpy as np
 tf.compat.v1.enable_eager_execution()
-import transformer, argparse, pdb, sys, re, threading, fastBPE, platform, random, time, json
+import transformer, argparse, pdb, sys, re, fastBPE, platform, random, time, json
 from collections import Counter
 from tensorflow.python import debug as tf_debug
 from tensorflow.python.ops import math_ops
@@ -87,18 +87,19 @@ class Ctl():
 		
 	def stop(self):
 		self.running = False
-		return self.thr.join()
+		#return self.thr.join()
 
 	def start(self,txt):
-		if self.running:
+		"""if self.running:
 			print("Already running prompt.")
 		else:
-			self.raw_prompt = txt
-			self.setPrompt()
+			"""
+		self.raw_prompt = txt
+		self.setPrompt()
 
 	def setPrompt(self):
 		global split_prompt
-		print("------ Setting Prompt -------")
+		print("------ Setting Prompt: "+self.raw_prompt+" -------")
 		self.running = True
 		txt = self.raw_prompt.replace("@","")
 		prompt = cfg["defaults"]["control_code"]+" "+txt
@@ -109,8 +110,7 @@ class Ctl():
 			print("WARNING! You are not starting your generation from a control code so you won't get good results")
 		self.prompt = prompt
 	
-		self.thr = threading.Thread(target=self.gentext, args=(), kwargs={})
-		self.thr.start()
+		
 		
 		self.pcb(" ".join(split_prompt[1:]))
 		

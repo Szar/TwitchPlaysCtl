@@ -1,4 +1,4 @@
-import os, sys, irc.bot, random, time, json, requests
+import os, sys, irc.bot, random, time, json, requests, threading
 from ctl import Ctl
 
 with open("config.json", "r") as f: cfg = json.load(f)
@@ -10,6 +10,7 @@ class TwitchController():
 	def __init__(self):
 		self.ctl = Ctl(self.update, self.stopped, self.title)
 		self.prompt = {}
+		self.running = False
 
 	def addPrompt(self,message):
 		prompt = message["command_text"]
@@ -35,9 +36,13 @@ class TwitchController():
 
 	def startPrompt(self, message):
 		self.prompt = self.addPrompt(message)
-		self.ctl.start(self.prompt["prompt"])
+		self.thr = threading.Thread(target=self.ctl.start, args=(self.prompt["prompt"]), kwargs={})
+		self.thr.start()
+		#self.ctl.start(self.prompt["prompt"])
 
 	def stopPrompt(self):
+		self.running = False
+		self.ctl.running = False
 		self.ctl.stop()
 		
 	def update(self, txt):
