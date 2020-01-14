@@ -9,7 +9,7 @@ with open("config.json", "r") as f: cfg = json.load(f)
 
 class TwitchController():
 	def __init__(self):
-		#self.ctl = Ctl(self.update, self.stopped, self.title)
+		self.ctl = Ctl(self.update, self.stopped, self.title)
 		self.prompt = False
 
 	def addPrompt(self,message):
@@ -61,37 +61,6 @@ class TwitchController():
 		print(self.prompt["prompt"])
 		print(txt)
 		print("==================")
-
-
-
-	"""
-
-	def title(self, txt):
-		self.setv("prompt",txt)
-		#self.botData["prompt"] = txt
-
-	def stopped(self):
-		self.botData["data"] = ""
-		self.botData["prompt"] = "Waiting for new prompt..."
-
-	def prompt(self,txt):
-		print(txt)
-		#self.setv("prompt",txt)
-		#
-	
-	def newprompt(self):
-		pass
-		#
-	
-	def setv(self,k,v):
-		self.botData[k] = v
-	
-	def get(self, k):
-		return self.botData[k]"""
-
-
-
-
 
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
