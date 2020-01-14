@@ -14,6 +14,7 @@ from control_codes import CONTROL_CODES
 from multiprocessing import Pool
 with open("config.json", "r") as f: cfg = json.load(f)
 
+
 generate_num = cfg["defaults"]["generate_num"]
 temperature = cfg["defaults"]["temperature"]
 split_prompt = ""
@@ -107,7 +108,7 @@ class Ctl():
 		if not any(split_prompt[0] == x for x in CONTROL_CODES.keys()):
 			print("WARNING! You are not starting your generation from a control code so you won't get good results")
 		self.prompt = prompt
-
+	
 		self.thr = threading.Thread(target=self.gentext, args=(), kwargs={})
 		self.thr.start()
 		

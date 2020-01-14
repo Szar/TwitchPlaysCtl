@@ -109,16 +109,18 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		
 		if cmd == "prompt":
 			self.controller.startPrompt(message)
-			time.sleep(10)
-			self.controller.update("how far can you do this thing addon text")
+			c.privmsg(self.channel, "[New Prompt] \""+message["command_text"]+"\"")
+			#time.sleep(10)
+			#self.controller.update("how far can you do this thing addon text")
 		
 		elif cmd == "new-prompt":
 			self.controller.stopPrompt()
+			c.privmsg(self.channel, "[Stopped Prompt]")
 
 
 		
 		
-		c.privmsg(self.channel, "[Received Command] \""+message["text"]+"\"")
+		
 
 		 # channel
 		
@@ -142,8 +144,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		elif cmd == "seed":
 			setSeed(int(e.arguments[0].replace("!seed ","").strip()))"""
 
-bot = TwitchBot(cfg["twitch"]["bot_username"], cfg["twitch"]["client_id"], cfg["twitch"]["bot_token"], cfg["twitch"]["channel"])
-bot.start()
+if __name__ == "__main__":
+	bot = TwitchBot(cfg["twitch"]["bot_username"], cfg["twitch"]["client_id"], cfg["twitch"]["bot_token"], cfg["twitch"]["channel"])
+	bot.start()
 
 #twitchplaysbot = TwitchController()
 #twitchplaysbot.newprompt()
