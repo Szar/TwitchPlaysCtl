@@ -22,9 +22,9 @@ class TwitchController():
 	
 	def getUser(self,message):
 		r = requests.post(cfg["defaults"]["api_url"]+"?action=user", data=message).json()
-		print("=== getUser ===")
-		print(json.dumps(r))
-		print("==================")
+		#print("=== getUser ===")
+		#print(json.dumps(r))
+		#print("==================")
 		return r
 
 	def getCurrentPrompt(self):
@@ -48,6 +48,7 @@ class TwitchController():
 		self.running = False
 		self.ctl.running = False
 		self.ctl.stop()
+		self.thr.join()
 		
 	def update(self, txt):
 		self.prompt["text"] = txt
