@@ -15,8 +15,10 @@ class TwitchController():
 		self.say = say
 
 	def addGuess(self,message):
-		self.guess[message["username"]] = re.sub(r'\W+', '', message["command_text"].lower().strip()) 
-		print(self.guess)
+		guess = re.sub(r'\W+', '', message["command_text"].lower().strip()).strip()
+		if guess!="" and guess!=" ":
+			self.guess[message["username"]] = guess
+			print(self.guess)
 
 	def addPrompt(self,message):
 		prompt = message["command_text"]
@@ -57,7 +59,7 @@ class TwitchController():
 		self.thr.join()
 	
 	def score(self, txt):
-		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip())
+		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip()).strip()
 		winners = []
 		if len(self.guess)>0:
 			for u in self.guess:
