@@ -89,15 +89,19 @@ class Ctl():
 		self.running = False
 		#return self.thr.join()
 
-	def start(self,txt):
+	def setPrompt(self,txt):
+		self.raw_prompt = txt
+		return self.raw_prompt
+
+	#def start(self,txt):
 		"""if self.running:
 			print("Already running prompt.")
 		else:
 			"""
-		self.raw_prompt = txt
-		self.setPrompt()
+		#self.raw_prompt = txt
+		#self.setPrompt()
 
-	def setPrompt(self):
+	def start(self):
 		global split_prompt
 		print("------ Setting Prompt: "+self.raw_prompt+" -------")
 		self.running = True
