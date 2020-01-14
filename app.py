@@ -11,6 +11,11 @@ class TwitchController():
 		self.ctl = Ctl(self.update, self.stopped, self.title)
 		self.prompt = {}
 		self.running = False
+		self.guess = {}
+
+	def addGuess(self,message):
+		self.guess[message["username"]] = message["command_text"]
+		print(self.guess)
 
 	def addPrompt(self,message):
 		prompt = message["command_text"]
@@ -57,7 +62,8 @@ class TwitchController():
 		print("=== update ===")
 		print(json.dumps(r))
 		print("==================")
-		#return r
+		
+		self.guess = {}
 
 	def stopped(self):
 		self.running = False
@@ -123,6 +129,10 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 			self.controller.startPrompt(message)
 			c.privmsg(self.channel, "[New Prompt] \""+message["command_text"]+"\"")
 		
+		elif cmd == "new-prompt":
+			self.controller.stopPrompt()
+			c.privmsg(self.channel, "[Stopped Prompt]")
+
 		elif cmd == "new-prompt":
 			self.controller.stopPrompt()
 			c.privmsg(self.channel, "[Stopped Prompt]")
