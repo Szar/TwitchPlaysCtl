@@ -14,29 +14,15 @@ from control_codes import CONTROL_CODES
 from multiprocessing import Pool
 with open("config.json", "r") as f: cfg = json.load(f)
 
-#args = parser.parse_args()
-model_dir = cfg["defaults"]["model_dir"]
-control_code = cfg["defaults"]["control_code"]
-aseed = cfg["defaults"]["seed"]
 generate_num = cfg["defaults"]["generate_num"]
 temperature = cfg["defaults"]["temperature"]
-nucleusprob = cfg["defaults"]["nucleusprob"]
-topk = cfg["defaults"]["topk"]
-penalty = cfg["defaults"]["penalty"]
-topn = cfg["defaults"]["topn"]
-#prompt = ""
 split_prompt = ""
 text = ""
-is_running = False
-
-
-tf.compat.v1.random.set_random_seed(aseed)
-os.environ['PYTHONHASHSEED'] = str(aseed)
-np.random.seed(aseed)
-
+tf.compat.v1.random.set_random_seed(cfg["defaults"]["seed"])
+os.environ['PYTHONHASHSEED'] = str(cfg["defaults"]["seed"])
+np.random.seed(cfg["defaults"]["seed"])
 vocab = open('vocab', encoding='utf-8').read().split('\n')
 vocab = list(map(lambda x: x.split(' ')[0], vocab)) + ['<unk>'] + ['\n']
-
 vocab_size = len(vocab)
 word2idx = {u:i for i, u in enumerate(vocab)}
 idx2word = np.array(vocab)
@@ -78,7 +64,7 @@ model.compile(optimizer=optimizer, loss=loss)
 print(model.summary())
 
 run_config = tf.contrib.tpu.RunConfig(
-		model_dir=model_dir)
+		model_dir=cfg["defaults"]["model_dir"])
 
 estimator_model = tf.keras.estimator.model_to_estimator(keras_model=model, config=run_config)
 
@@ -113,7 +99,7 @@ class Ctl():
 		global split_prompt
 		self.running = True
 		txt = self.raw_prompt.replace("@","")
-		prompt = control_code+" "+txt
+		prompt = cfg["defaults"]["control_code"]+" "+txt
 		prompt = prompt.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
 		split_prompt = ' \n '.join(bpe.apply(prompt))
 		split_prompt = split_prompt.split(' ')
@@ -124,7 +110,6 @@ class Ctl():
 		self.thr = threading.Thread(target=self.gentext, args=(), kwargs={})
 		self.thr.start()
 		
-		print(split_prompt)
 		self.pcb(" ".join(split_prompt[1:]))
 		
 		#self.split_prompt = split_prompt
@@ -133,10 +118,7 @@ class Ctl():
 		
 	def gentext(self):
 		global text
-		#prompt = self.prompt
-		#time.sleep(15)
-		#print("Done")
-		#split_prompt = self.split_prompt
+
 		text = [word2idx[i] for i in split_prompt]
 		padded_text = text + [0] * (generate_num - len(text))
 		tokens_generated = np.tile(padded_text, (1,1))
@@ -157,7 +139,7 @@ class Ctl():
 							start = token - seq_length + 2
 							prompt_logits = predict_fn({'input_1':np.hstack((tokens_generated[:,0:1], tokens_generated[:,start:end]))})['tied_embedding_softmax'].squeeze() / (temperature if temperature>0 else 1.)
 
-						if penalty>0:
+						if cfg["defaults"]["penalty"]>0:
 							penalized_so_far = set()
 							for _ in range(token+1):
 								generated_token = tokens_generated[0][_]
@@ -166,7 +148,7 @@ class Ctl():
 								if generated_token in penalized_so_far:
 									continue
 								penalized_so_far.add(generated_token)
-								prompt_logits[_token][generated_token] /= penalty
+								prompt_logits[_token][generated_token] /= cfg["defaults"]["penalty"]
 
 						# disallow some tokens
 						prompt_logits[_token][word2idx['<unk>']] = -1e8
@@ -175,11 +157,11 @@ class Ctl():
 						prompt_probs = np.exp(prompt_logits[_token])
 						prompt_probs = prompt_probs / sum(prompt_probs)
 						pruned_list = np.argsort(prompt_probs)[::-1]
-						if nucleusprob > 0.:
+						if cfg["defaults"]["nucleusprob"] > 0.:
 							minimum_topk = 1
-							nucleus = max(np.where(np.cumsum(np.sort(prompt_probs)[::-1])>nucleusprob)[0][0], minimum_topk)
-						elif topk > 0:
-							nucleus = topk
+							nucleus = max(np.where(np.cumsum(np.sort(prompt_probs)[::-1])>cfg["defaults"]["nucleusprob"])[0][0], minimum_topk)
+						elif cfg["defaults"]["topk"] > 0:
+							nucleus = cfg["defaults"]["topk"]
 						else:
 							nucleus = len(pruned_list)
 							
@@ -191,8 +173,8 @@ class Ctl():
 								tokens_to_disallow.append(_)
 						pruned_list = np.delete(pruned_list, tokens_to_disallow)
 
-						if topn > 0 :
-							print('TOPN :: top-n alternatives:', [idx2word[_] for _ in pruned_list[:topn]])
+						if cfg["defaults"]["topn"] > 0 :
+							print('TOPN :: top-n alternatives:', [idx2word[_] for _ in pruned_list[:cfg["defaults"]["topn"]]])
 
 						if temperature==0:
 							idx = pruned_list[0]
@@ -200,7 +182,7 @@ class Ctl():
 							chosen_idx = int(tf.random.categorical(np.expand_dims(prompt_logits[_token][pruned_list],0), num_samples=1).numpy())
 							idx = pruned_list[chosen_idx]
 
-						if topn > 0 :
+						if cfg["defaults"]["topn"] > 0 :
 							print('TOPN :: chosen word:', idx2word[idx])
 
 						tokens_generated[0][token+1] = idx
@@ -217,3 +199,5 @@ class Ctl():
 			return
 		self.running = False
 		return
+
+#ctl = Ctl()
