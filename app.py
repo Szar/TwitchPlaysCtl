@@ -133,9 +133,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 			self.controller.stopPrompt()
 			c.privmsg(self.channel, "[Stopped Prompt]")
 
-		elif cmd == "new-prompt":
-			self.controller.stopPrompt()
-			c.privmsg(self.channel, "[Stopped Prompt]")
+		elif cmd == "guess":
+			self.controller.addGuess(message)
+			c.privmsg(self.channel, "[Guess] "+message["username"]+" thinks \""+message["command_text"]+"\"")
 
 
 if __name__ == "__main__":
