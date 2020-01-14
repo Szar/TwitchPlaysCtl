@@ -78,7 +78,7 @@ bpe = fastBPE.fastBPE('codes', 'vocab')
 class Ctl():
 	def __init__(self, cb, stcb, pcb):
 		self.prompt =  ""
-		self.thr = threading.Thread(target=self.setPrompt, args=(), kwargs={})
+		#self.thr = threading.Thread(target=self.setPrompt, args=(), kwargs={})
 		self.cb = cb
 		self.stcb = stcb
 		self.pcb = pcb
@@ -97,6 +97,7 @@ class Ctl():
 
 	def setPrompt(self):
 		global split_prompt
+		print("------ Setting Prompt -------")
 		self.running = True
 		txt = self.raw_prompt.replace("@","")
 		prompt = cfg["defaults"]["control_code"]+" "+txt
@@ -118,7 +119,7 @@ class Ctl():
 		
 	def gentext(self):
 		global text
-
+		print("------ Generating Text -------")
 		text = [word2idx[i] for i in split_prompt]
 		padded_text = text + [0] * (generate_num - len(text))
 		tokens_generated = np.tile(padded_text, (1,1))
