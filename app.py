@@ -1,6 +1,5 @@
 import os, sys, irc.bot, random, time, json, requests
-#from ctl import Ctl
-#import asynctwitch
+from ctl import Ctl
 
 with open("config.json", "r") as f: cfg = json.load(f)
 
