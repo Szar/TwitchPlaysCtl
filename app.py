@@ -34,6 +34,7 @@ async def newprompt(message):
 async def prompt(message, subcommand:str):
 	twitchplaysbot.prompt(subcommand)
 
+""" Threading creating issue with doubles? """
 thr = threading.Thread(target=bot.start, args=(), kwargs={})
 thr.start()
 
