@@ -59,16 +59,17 @@ class TwitchController():
 	def score(self, txt):
 		word = txt.strip().split(" ")[-1].lower().strip()
 		winners = []
-		for u in self.guess:
-			if word==self.guess[u]:
-				winners.append(u)
-			#	self.say(u+" got it right!")
-			#else:
-			#	self.say(u+" got it wrong!")
-		if len(winners)>0:
-			self.say(", ".join(winners)+" got it right!")
-		else:
-			self.say("No one was right.")
+		if len(self.guess)>0:
+			for u in self.guess:
+				if word==self.guess[u]:
+					winners.append(u)
+				#	self.say(u+" got it right!")
+				#else:
+				#	self.say(u+" got it wrong!")
+			if len(winners)>0:
+				self.say(", ".join(winners)+" got it right!")
+			else:
+				self.say("No one was right.")
 
 		self.guess = {}
 
