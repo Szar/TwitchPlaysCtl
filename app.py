@@ -9,7 +9,7 @@ with open("config.json", "r") as f: cfg = json.load(f)
 class TwitchController():
 	def __init__(self):
 		self.ctl = Ctl(self.update, self.stopped, self.title)
-		self.prompt = False
+		self.prompt = {}
 
 	def addPrompt(self,message):
 		prompt = message["command_text"]
@@ -84,7 +84,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		c.join(self.channel)
 		print("[ Bot Running ]") 
 		#self.controller.addPrompt(sample_message)
-		self.controller.stopPrompt()
+		self.controller.stopped()
 		
 	def on_pubmsg(self, c, e):
 		if e.arguments[0][:1] == '!':
