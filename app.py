@@ -80,7 +80,7 @@ class TwitchController():
 		self.prompt["text"] = txt
 		r = requests.post(cfg["defaults"]["api_url"]+"?action=update_prompt", data={"text":txt, "id":self.prompt["id"]}).json()
 		print("=== update ===")
-		print(json.dumps(r))
+		print(txt)
 		print("==================")
 		
 		self.score(txt)
