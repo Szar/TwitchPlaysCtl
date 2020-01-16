@@ -86,8 +86,7 @@ class TwitchController():
 		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip()).strip()
 		r = requests.post(cfg["defaults"]["api_url"]+"?action=update_prompt", data={"text":txt, "id":self.prompt["id"], "word": word})
 		print("=== update ===")
-		print(r.text)
-		#.json()
+		print(txt)
 		self.score(txt, word)
 
 	def stopped(self):
