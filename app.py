@@ -56,8 +56,8 @@ class TwitchController():
 		self.ctl.stop()
 		self.thr.join()
 	
-	def score(self, txt):
-		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip()).strip()
+	def score(self, txt, word):
+		
 		winners = []
 		try:
 			if len(self.guess)>0:
@@ -78,10 +78,11 @@ class TwitchController():
 		
 	def update(self, txt):
 		self.prompt["text"] = txt
-		r = requests.post(cfg["defaults"]["api_url"]+"?action=update_prompt", data={"text":txt, "id":self.prompt["id"]}).json()
+		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip()).strip()
+		r = requests.post(cfg["defaults"]["api_url"]+"?action=update_prompt", data={"text":txt, "id":self.prompt["id"], "word": word}).json()
 		print("=== update ===")
 		print(txt)
-		self.score(txt)
+		self.score(txt, word)
 
 	def stopped(self):
 		self.running = False
