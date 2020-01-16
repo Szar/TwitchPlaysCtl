@@ -28,7 +28,10 @@ class TwitchController():
 		return r[0]
 	
 	def getUser(self,message):
-		r = requests.post(cfg["defaults"]["api_url"]+"?action=user", data=message).json()
+		try:
+			r = requests.post(cfg["defaults"]["api_url"]+"?action=user", data=message).json()
+		except:
+			r = {}
 		return r
 
 	def getCurrentPrompt(self):
@@ -63,9 +66,9 @@ class TwitchController():
 					r = requests.get(cfg["defaults"]["api_url"]+"?action=add_score&username="+u+"&score=1&channel=unknown").json()
 
 			if len(winners)>0:
-				self.say(", ".join(winners)+" guessed the word \""+txt+"\" correctly!")
+				self.say(", ".join(winners)+" guessed the word \""+word+"\" correctly!")
 			else:
-				self.say("The correct word was \""+txt+"\"")
+				self.say("The correct word was \""+word+"\"")
 
 		self.guess = {}
 
