@@ -40,7 +40,9 @@ Create config.json add:
 ```
 {
 	"defaults": {
-		"port": 3100,
+		"api_url": "",
+		"model_dir":"seqlen256_v1.ckpt",
+		"control_code": "Pill",
 		"seed": 34391,
 		"temperature": 0.9,
 		"generate_num": 256,
