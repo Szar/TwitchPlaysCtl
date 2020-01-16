@@ -59,16 +59,19 @@ class TwitchController():
 	def score(self, txt):
 		word = re.sub(r'\W+', '', txt.strip().split(" ")[-1].lower().strip()).strip()
 		winners = []
-		if len(self.guess)>0:
-			for u in self.guess:
-				if word==self.guess[u]:
-					winners.append(u)
-					r = requests.get(cfg["defaults"]["api_url"]+"?action=add_score&username="+u+"&score=1&channel=unknown").json()
+		try:
+			if len(self.guess)>0:
+				for u in self.guess:
+					if word==self.guess[u]:
+						winners.append(u)
+						r = requests.get(cfg["defaults"]["api_url"]+"?action=add_score&username="+u+"&score=1&channel=unknown").json()
 
-			if len(winners)>0:
-				self.say(", ".join(winners)+" guessed the word \""+word+"\" correctly!")
-			else:
-				self.say("The correct word was \""+word+"\"")
+				if len(winners)>0:
+					self.say(", ".join(winners)+" guessed the word \""+word+"\" correctly!")
+				else:
+					self.say("The correct word was \""+word+"\"")
+		except Exception as e:
+			print(e)
 
 		self.guess = {}
 
