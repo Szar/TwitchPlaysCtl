@@ -25,21 +25,17 @@ class TwitchController():
 		r = requests.post(cfg["defaults"]["api_url"]+"?action=add_prompt", data=message).json()
 		print("=== addPrompt ===")
 		print(json.dumps(r))
-		print("==================")
 		return r[0]
 	
 	def getUser(self,message):
 		r = requests.post(cfg["defaults"]["api_url"]+"?action=user", data=message).json()
-		#print("=== getUser ===")
-		#print(json.dumps(r))
-		#print("==================")
 		return r
 
 	def getCurrentPrompt(self):
 		r = requests.get(cfg["defaults"]["api_url"]+"?action=get_prompt").json()
 		print("=== getCurrentPrompt ===")
 		print(json.dumps(r))
-		print("==================")
+
 		return r
 
 	def startPrompt(self, message):
@@ -50,10 +46,9 @@ class TwitchController():
 				self.ctl.setPrompt(self.prompt["prompt"])
 				self.thr = threading.Thread(target=self.ctl.start)
 				self.thr.start()
-			#self.ctl.start(self.prompt["prompt"])
+
 
 	def stopPrompt(self):
-		
 		self.ctl.running = False
 		self.ctl.stop()
 		self.thr.join()
@@ -65,13 +60,12 @@ class TwitchController():
 			for u in self.guess:
 				if word==self.guess[u]:
 					winners.append(u)
-				#	self.say(u+" got it right!")
-				#else:
-				#	self.say(u+" got it wrong!")
+					r = requests.get(cfg["defaults"]["api_url"]+"?action=add_score&username="+u+"&score=1&channel=unknown").json()
+
 			if len(winners)>0:
-				self.say(", ".join(winners)+" got it right!")
+				self.say(", ".join(winners)+" guessed the word \""+txt+"\" correctly!")
 			else:
-				self.say("No one was right.")
+				self.say("The correct word was \""+txt+"\"")
 
 		self.guess = {}
 
@@ -81,8 +75,6 @@ class TwitchController():
 		r = requests.post(cfg["defaults"]["api_url"]+"?action=update_prompt", data={"text":txt, "id":self.prompt["id"]}).json()
 		print("=== update ===")
 		print(txt)
-		print("==================")
-		
 		self.score(txt)
 
 	def stopped(self):
@@ -90,16 +82,9 @@ class TwitchController():
 		r = requests.get(cfg["defaults"]["api_url"]+"?action=deactivate").json()
 		print("=== stopPrompt ===")
 		print(json.dumps(r))
-		print("==================")
-		#return r
 
 	def title(self, txt):
 		pass
-		#print("=== title ===")
-		#print(self.prompt["prompt"])
-		#print(txt)
-		#print("==================")
-
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
 	def __init__(self, username, client_id, token, channel):
@@ -157,7 +142,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 		elif cmd == "guess":
 			self.controller.addGuess(message)
-			c.privmsg(self.channel, "[Ctl] "+message["username"]+" thinks the next word will be \""+message["command_text"]+"\"")
+			#c.privmsg(self.channel, "[Ctl] "+message["username"]+" thinks the next word will be \""+message["command_text"]+"\"")
 
 
 if __name__ == "__main__":
