@@ -18,7 +18,10 @@ class TwitchController():
 		guess = re.sub(r'\W+', '', message["command_text"].lower().strip()).strip()
 		if guess!="" and guess!=" ":
 			self.guess[message["username"]] = guess
-			print(self.guess)
+			#print(self.guess)
+			r = requests.post(cfg["defaults"]["api_url"]+"?action=update_guess", data={"guess":json.dumps(self.guess), "id":self.prompt["id"]}).json()
+			print("=== guess ===")
+			print(r)
 
 	def addPrompt(self,message):
 		prompt = message["command_text"]
