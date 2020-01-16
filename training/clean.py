@@ -1,4 +1,7 @@
 
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 filename = input("File: ")
 
 def openFile(fn):
@@ -7,9 +10,9 @@ def openFile(fn):
 	f.close()
 	return d
 
-def saveFile(fn):
+def saveFile(fn,d):
 	f = open(fn,'w')
-	f.write(content)
+	f.write(d)
 	f.close()
 
 content = openFile(filename)
