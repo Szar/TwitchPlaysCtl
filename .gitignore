@@ -140,3 +140,6 @@ config.json
 *config.json
 config.*
 training/*.txt
+
+training/*.txt
+training/*.tfrecords
