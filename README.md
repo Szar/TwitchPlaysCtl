@@ -66,5 +66,5 @@ https://id.twitch.tv/oauth2/authorize?client_id=CLIENT_ID_HERE&redirect_uri=REDI
 
 ### Running
 ```
-python twitchplaysctl.py --model_dir YOUR_CKPT_DIR.ckpt
+python app.py
 ```
