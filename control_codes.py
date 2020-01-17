@@ -57,5 +57,6 @@ CONTROL_CODES = {
     "multilingual": 128406,
 	"Trash": 246534,
 	"Pill": 246534,
-    "Trashbot":246534
+    "Trashbot":246534,
+    "Incelbot":246534
 }
