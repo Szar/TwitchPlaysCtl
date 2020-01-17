@@ -56,5 +56,6 @@ CONTROL_CODES = {
     "Translation": 26820,
     "multilingual": 128406,
 	"Trash": 246534,
-	"Pill": 246534
+	"Pill": 246534,
+    "Trashbot":246534
 }
