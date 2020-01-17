@@ -5,13 +5,13 @@
 filename = input("File: ")
 
 def openFile(fn):
-	f = open(fn,'r')
+	f = open(fn,'r',encoding="utf8")
 	d = f.read()
 	f.close()
 	return d
 
 def saveFile(fn,d):
-	f = open(fn,'w')
+	f = open(fn,'w',encoding="utf8")
 	f.write(d)
 	f.close()
 
