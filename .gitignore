@@ -143,3 +143,6 @@ training/*.txt
 
 training/*.txt
 training/*.tfrecords
+
+*.bat
+training/*.bat
