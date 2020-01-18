@@ -100,12 +100,12 @@ class Ctl():
 		print("------ Setting Prompt: "+self.raw_prompt+" -------")
 		self.running = True
 		txt = self.raw_prompt
-		prompt = "Movies "+txt
+		prompt = "Links "+txt
 		prompt = prompt.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
 		split_prompt = ' \n '.join(bpe.apply(prompt)).replace("","")
 		split_prompt = split_prompt.split(' ')
 		
-		split_prompt[0] = cfg["defaults"]["control_code"]
+		#split_prompt[0] = cfg["defaults"]["control_code"]
 		print(split_prompt)
 		if not any(split_prompt[0] == x for x in CONTROL_CODES.keys()):
 			print("WARNING! You are not starting your generation from a control code so you won't get good results")

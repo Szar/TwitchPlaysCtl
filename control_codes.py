@@ -54,7 +54,5 @@ CONTROL_CODES = {
     "Reviews": 41671,
     "News": 4256,
     "Translation": 26820,
-    "multilingual": 128406,
-    "Trashbot":246534,
-    "Incelbot":128405
+    "multilingual": 128406
 }
