@@ -56,5 +56,5 @@ CONTROL_CODES = {
     "Translation": 26820,
     "multilingual": 128406,
     "Trashbot":246534,
-    "Incelbot":246534
+    "Incelbot":128405
 }
