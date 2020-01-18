@@ -1,43 +1,41 @@
-from __future__ import division
-from __future__ import print_function
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-import tensorflow as tf
-import numpy as np
-tf.compat.v1.enable_eager_execution()
-import transformer, argparse, pdb, sys, re, fastBPE, platform, random, time, json
-from collections import Counter
-from tensorflow.python import debug as tf_debug
-from tensorflow.python.ops import math_ops
-from tensorflow.python.ops import embedding_ops
-from control_codes import CONTROL_CODES
 from multiprocessing import Pool
+import os, sys, threading, irc.bot, random, time, json
+from twitchplaysbot import TwitchBotController
+import asynctwitch
+
 with open("config.json", "r") as f: cfg = json.load(f)
 
-generate_num = cfg["defaults"]["generate_num"]
-temperature = cfg["defaults"]["temperature"]
-split_prompt = ""
-text = ""
-tf.compat.v1.random.set_random_seed(cfg["defaults"]["seed"])
-os.environ['PYTHONHASHSEED'] = str(cfg["defaults"]["seed"])
-np.random.seed(cfg["defaults"]["seed"])
-vocab = open('vocab', encoding='utf-8').read().split('\n')
-vocab = list(map(lambda x: x.split(' ')[0], vocab)) + ['<unk>'] + ['\n']
-vocab_size = len(vocab)
-word2idx = {u:i for i, u in enumerate(vocab)}
-idx2word = np.array(vocab)
-seq_length = min(generate_num, 256)
-embedding_dim = 1280
+print("Token Auth URL: ")
+print("https://id.twitch.tv/oauth2/authorize?client_id="+cfg["twitch"]["client_id"]+"&redirect_uri="+cfg["twitch"]["redirect_uri"]+"&response_type=token&scope=chat:edit%20chat:read%20user:read:email%20user:read:broadcast%20channel:read:subscriptions%20bits:read%20analytics:read:games")
 
-bpe = fastBPE.fastBPE('codes', 'vocab')
+twitchplaysbot = TwitchBotController()
 
-while True:
-	i = input("Prompt: ")
-	p = "Movies "+i
-	prompt = p.replace("  "," ").replace("  "," ").replace("  "," ").replace("  "," ").strip().split('\\n')
-	split_prompt = ' \n '.join(bpe.apply(prompt)).replace("","")
-	split_prompt = split_prompt.split(' ')
-	print(split_prompt)
-	if not any(split_prompt[0] == x for x in CONTROL_CODES.keys()):
-		print("WARNING! You are not starting your generation from a control code so you won't get good results")
-	
+bot = asynctwitch.CommandBot(
+			user = cfg["twitch"]["bot_username"],
+			oauth = 'oauth:'+cfg["twitch"]["bot_token"],  # oauth:1234567890abcdefghijklmnopqrst
+			channel = cfg["twitch"]["channel"],     
+			prefix = "!",  
+		)
+@bot.command('example', alias=['moreexample','anothaone'], desc='example command')
+async def example(message, word1:str, number1:int, rest:str):
+	bot.say(message.channel.name, 'wow')
+
+
+@bot.command('new-prompt', alias=[], desc='Restart prompt')
+async def newprompt(message, subcommand:str):
+	twitchplaysbot.newprompt()
+	#bot.say('restarting...')
+
+@bot.command('prompt', alias=[], desc='Set new prompt')
+async def prompt(message, subcommand:str):
+	twitchplaysbot.prompt(subcommand)
+
+@bot.command('info', alias=[], desc='Set new prompt')
+async def info(message):
+	print({
+			"data":twitchplaysbot.get("data"),
+			"scores":twitchplaysbot.get("scores"),
+			"prompt":twitchplaysbot.get("prompt")
+		})
+
+bot.start()
